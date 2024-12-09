@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP GET e PUT com Proxy</title>
+</head>
+<body>
+  <h1>Aplicativo HTTP GET e PUT</h1>
+  <button id="get-btn">Buscar Informações do Usuário</button>
+  <button id="put-btn">Atualizar E-mail</button>
+  <pre id="response" style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd;"></pre>
+
+  <script>
+    const responseBox = document.getElementById("response");
+
+    document.getElementById("get-btn").addEventListener("click", () => {
+      fetch("http://localhost:3000/api/usuario/10", {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Erro: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          responseBox.textContent = `Usuário: ${data.nome}\nE-mail: ${data.email}`;
+        })
+        .catch(error => {
+          responseBox.textContent = `Erro ao buscar informações: ${error.message}`;
+        });
+    });
+
+    document.getElementById("put-btn").addEventListener("click", () => {
+      fetch("http://localhost:3000/api/usuario/10", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email: "novousuario@email.com" })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Erro: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          responseBox.textContent = `Resposta do servidor: ${data.mensagem}`;
+        })
+        .catch(error => {
+          responseBox.textContent = `Erro ao atualizar e-mail: ${error.message}`;
+        });
+    });
+  </script>
+</body>
+</html>
